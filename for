@@ -1,4 +1,4 @@
-名前を付けて保存
+名前を付けて保存!!!!!
 文字コード：ANSI
 
 https://it-biz.online/it-skills/command-for/
