@@ -1,0 +1,70 @@
+I am using below steps to automatically execute my batch files.
+1.Create a text file and change name to IT-B.bat.
+2.Input below statements into the bat file.
+  start /wait cmd /c "c:\bat\first.bat >c:\bat\first_IT-B.log"
+  start /wait cmd /c "c:\bat\second.bat >c:\bat\second_IT-B.log"
+3.Open an command prompt and type below command.
+  IT-B.bat
+  ※on windows explorer, change path (batch files folder), input "cmd" on the address.
+
+--------------------------------------------------------------------------------------------------------------------
+The following is the process of creating a batch file after consulting with Chatgpt. Please refer to it.
+
+[original batch file]
+--------start
+sub1.bat > sub1.log
+sub2.bat > sub2.log
+--------end
+[Why did my batch file close after executing the first row?]
+To execute another batch file from within a batch file without stopping the execution of the calling batch file, 
+you should use the call command.
+When you simply execute another batch file, 
+it will replace the current batch file, 
+and the rest of the commands in the calling batch file won't be executed. 
+By using call, you ensure that control returns to the calling batch file after the called batch file finishes.
+--------start
+@echo off
+echo This is the main batch file.
+call sub1.bat
+echo Back to the main batch file.
+call sub2.bat
+pause
+--------end
+
+[exit 0]
+If each batch file has an exit 0 (or simply exit) command, 
+it will terminate the Command Prompt session, stopping the execution of subsequent commands. 
+To ensure that multiple batch files execute one after the other automatically, 
+you need to avoid using exit within the batch files or modify the way you call them.
+[exit 0][modify the way you call them]
+Approach 2: Use start /wait Command
+If you must keep the exit command in each batch file,
+you can use the start /wait command to run each batch file in a new Command Prompt window and wait for it to finish before moving to the next one.
+--------start
+@echo off
+start /wait cmd /c first.bat
+start /wait cmd /c second.bat
+start /wait cmd /c third.bat
+echo All batch files have been executed.
+pause
+--------end
+
+[execution log]
+To properly capture the logs of each batch file, 
+you need to redirect both the standard output (stdout) and standard error (stderr) to the log file. 
+Additionally, it's important to place the redirection inside the cmd /c command to ensure it captures the output correctly.
+--------start
+@echo off
+start /wait cmd /c "first.bat > first.log 2>&1"
+start /wait cmd /c "second.bat > second.log 2>&1"
+start /wait cmd /c "third.bat > third.log 2>&1"
+echo All batch files have been executed.
+pause
+--------end
+
+[ > first.log 2>&1]
+This part redirects both standard output and standard error to the log file.
+2>&1 means redirect standard error (2) to the same place as standard output (1).
+※I only need the standard output, therefore I deleted " 2>&1".
+
+
